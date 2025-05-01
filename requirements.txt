@@ -1,0 +1,8 @@
+requests
+beautifulsoup4
+selenium
+playwright
+rich
+jinja2
+urllib3
+flask
