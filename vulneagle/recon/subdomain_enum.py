@@ -31,14 +31,20 @@ class SubdomainEnumerator:
         headers = {'User-Agent': 'Mozilla/5.0'}
         try:
             resp = session.get("https://dnsdumpster.com", headers=headers)
-            csrf_token = re.search(r'name="csrfmiddlewaretoken" value="(.*?)"', resp.text).group(1)
+            match = re.search(r'name="csrfmiddlewaretoken" value="(.*?)"', resp.text)
+            if not match:
+                print("[-] CSRF token not found. DNSdumpster may have blocked this request.")
+                return
+            csrf_token = match.group(1)
             cookies = resp.cookies.get_dict()
+
             post_data = {
                 'csrfmiddlewaretoken': csrf_token,
                 'targetip': self.domain
             }
             headers['Referer'] = 'https://dnsdumpster.com'
             result = session.post("https://dnsdumpster.com", cookies=cookies, data=post_data, headers=headers)
+
             subdomains = re.findall(r">([a-zA-Z0-9_.-]*\." + re.escape(self.domain) + r")<", result.text)
             for sub in subdomains:
                 self.subdomains.add(sub.strip())
