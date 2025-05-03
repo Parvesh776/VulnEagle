@@ -12,12 +12,12 @@ target web application.
 Installation
 ======================================
 
-1. Clone the repository:
+1. Clone the repository:<br>
    git clone https://github.com/Parvesh776/VulnEagle.git
    cd VulnEagle
 
 2. Install Python Dependencies
-Make sure Python 3.10+ is installed. Then install required packages:
+Make sure Python 3.10+ is installed. Then install required packages: <br>
  pip install -r requirements.txt
 
 3. Install Playwright (for Smart Recon module)
