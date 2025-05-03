@@ -13,35 +13,8 @@ Installation
 ======================================
 
 1. Clone the repository:
-   git clone https://github.com/parvesh776/VulnEagle.git
-
-2Bilkul Parvesh Sir, yeh raha professional and clean installation guide jo aap apne GitHub ke README.md me daal sakte ho — specially for Kali Linux users:
-
-
----
-
-🔧 Installation Guide (Kali Linux)
-
-Follow the steps below to install and run VulnEagle on Kali Linux without using a virtual environment:
-
-1. Clone the Repository
-
-git clone https://github.com/your-username/VulnEagle.git
-cd VulnEagle
-
-Bilkul Parvesh Sir, yah rahi Kali Linux Installation Guide bina virtual environment ke — simple aur professional style me jo aap README.md me daal sakte ho:
-
-
----
-
-Installation on Kali Linux
-
-Follow the steps below to set up and run VulnEagle on Kali Linux:
-
-1. Clone the Repository
-
-git clone https://github.com/<your-username>/VulnEagle.git
-cd VulnEagle
+   git clone https://github.com/Parvesh776/VulnEagle.git
+   cd VulnEagle
 
 2. Install Python Dependencies
 Make sure Python 3.10+ is installed. Then install required packages:
