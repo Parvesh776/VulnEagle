@@ -46,7 +46,7 @@ Usage
 
 Run the VulnEagle CLI tool with the following command:
 
-python -m vulneagle.cli --url <target_url> [options]
+python vulneagle.py --url <target_url> [options]
 
 Options:
   --url <target_url>     : The target URL to scan (required).

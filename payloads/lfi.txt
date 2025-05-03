@@ -1,0 +1,4 @@
+../../../../etc/passwd
+/etc/passwd
+../windows/win.ini
+../../boot.ini
