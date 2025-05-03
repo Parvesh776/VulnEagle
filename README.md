@@ -27,7 +27,7 @@ Make sure Python 3.10+ is installed. Then install required packages: <br>
    playwright install<br>
 
 4. Run VulnEagle<br>
-   python vulneagle.py --url <target_url> [options]
+   python vulneagle.py --url <target_url> [options] <br>
 
 5. CLI Usage <br>
 python3 vulneagle.py -url https://example.com --recon<br>
