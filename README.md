@@ -20,15 +20,15 @@ Installation
 Make sure Python 3.10+ is installed. Then install required packages: <br>
  pip install -r requirements.txt
 
-3. Install Playwright (for Smart Recon module)
-   pip install playwright
-   playwright install
+3. Install Playwright (for Smart Recon module)<br>
+   pip install playwright<br>
+   playwright install<br>
 
-4. Run VulnEagle
+4. Run VulnEagle<br>
    python vulneagle.py -u https://target.com --recon
 
-5. CLI Usage 
-python vulneagle.py -u https://example.com --recon
+5. CLI Usage <br>
+python vulneagle.py -u https://example.com --recon<br>
 python vulneagle.py -u https://example.com --fuzz --auth cookie
 
 
