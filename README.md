@@ -13,21 +13,59 @@ Installation
 ======================================
 
 1. Clone the repository:
-   git clone https://github.com/yourusername/VulnEagle.git
+   git clone https://github.com/parvesh776/VulnEagle.git
 
-2. Navigate to the project directory:
-   cd VulnEagle
+2Bilkul Parvesh Sir, yeh raha professional and clean installation guide jo aap apne GitHub ke README.md me daal sakte ho — specially for Kali Linux users:
 
 
-3. Set up a virtual environment (optional but recommended):
-   python -m venv .venv
+---
 
-4. Activate the virtual environment:
-   - Windows: .\.venv\Scripts\activate
-   - Linux/Mac: source .venv/bin/activate
+🔧 Installation Guide (Kali Linux)
 
-5. Install the dependencies:
-   pip install -r requirements.txt
+Follow the steps below to install and run VulnEagle on Kali Linux without using a virtual environment:
+
+1. Clone the Repository
+
+git clone https://github.com/your-username/VulnEagle.git
+cd VulnEagle
+
+Bilkul Parvesh Sir, yah rahi Kali Linux Installation Guide bina virtual environment ke — simple aur professional style me jo aap README.md me daal sakte ho:
+
+
+---
+
+Installation on Kali Linux
+
+Follow the steps below to set up and run VulnEagle on Kali Linux:
+
+1. Clone the Repository
+
+git clone https://github.com/<your-username>/VulnEagle.git
+cd VulnEagle
+
+2. Install Python Dependencies
+Make sure Python 3.10+ is installed. Then install required packages:
+ pip install -r requirements.txt
+
+3. Install Playwright (for Smart Recon module)
+   pip install playwright
+   playwright install
+
+4. Run VulnEagle
+   python vulneagle.py -u https://target.com --recon
+
+5. CLI Usage 
+python vulneagle.py -u https://example.com --recon
+python vulneagle.py -u https://example.com --fuzz --auth cookie
+
+
+
+✅ Notes
+
+No need to create a virtual environment. This setup works directly with system Python.
+Make sure pip is updated: python -m pip install --upgrade pip
+If facing permission issues, try prepending sudo (not recommended unless necessary).
+
 
 ======================================
 Usage
