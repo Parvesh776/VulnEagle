@@ -18,19 +18,21 @@ Installation
 
 2. Install Python Dependencies
 Make sure Python 3.10+ is installed. Then install required packages: <br>
- pip install -r requirements.txt
+--sudo apt update<br>
+--sudo apt install python3-pip -y<br>
+--pip3 install -r requirements.txt
 
 3. Install Playwright (for Smart Recon module)<br>
    pip install playwright<br>
    playwright install<br>
 
 4. Run VulnEagle<br>
-   python vulneagle.py -u https://target.com --recon
+   python vulneagle.py --url <target_url> [options]
 
 5. CLI Usage <br>
-python vulneagle.py -u https://example.com --recon<br>
-python vulneagle.py -u https://example.com --fuzz --auth cookie
-
+python3 vulneagle.py -url https://example.com --recon<br>
+python3 vulneagle.py -url https://example.com --fuzz --auth cookie
+python3 vulneagle.py --url https://example.com --smart-recon --report-format html
 
 
 ✅ Notes
@@ -46,33 +48,20 @@ Usage
 
 Run the VulnEagle CLI tool with the following command:
 
-python vulneagle.py --url <target_url> [options]
+python vulneagle.py --url <target_url> [options] 
+python3 vulneagle.py --url https://target.com --smart-recon --report-format html
 
-Options:
-  --url <target_url>     : The target URL to scan (required).
-  --auth <cookie_file>   : Path to the cookie file for authentication (optional).
-  --token <bearer_token> : Bearer token for authentication (optional).
-  --report <html/none>   : Generate an HTML report of the scan results (optional).
 
-Example usage:
-1. Scan a website and generate an HTML report:
-   python -m vulneagle.cli --url https://example.com --report html
 
-2. Scan a website with authentication using a cookie file:
-   python -m vulneagle.cli --url https://example.com --auth cookies.txt --report html
-
-3. Scan a website with a bearer token:
-   python -m vulneagle.cli --url https://example.com --token YOUR_BEARER_TOKEN --report html
-
-======================================
-Modules
-======================================
-
-1. **js_scraper**: Extracts JavaScript endpoints from the target URL.
-2. **fuzz_engine**: Fuzzes the extracted endpoints with predefined payloads.
-3. **vuln_mapper**: Analyzes the responses and maps any potential vulnerabilities (e.g., XSS, SQLi).
-4. **html_report**: Generates an HTML report of the vulnerabilities found.
-5. **session_handler**: Handles authentication and session management.
+ | Option                | Description                                      |
+|-----------------------|--------------------------------------------------|
+| `--url`               | Target URL to scan *(required)*                 |
+| `--auth <cookies.txt>`| Load auth cookies for login-required pages       |
+| `--token <token>`     | Provide a bearer/auth token                      |
+| `--header <header>`   | Add a custom HTTP header                         |
+| `--smart-recon`       | Enable JS, subdomain, and dynamic link recon     |
+| `--report-format`     | Output format: `html`, `json`, or `txt`          |
+| `--output <filename>` | Save the output to a custom file                 |
 
 ======================================
 Contributing

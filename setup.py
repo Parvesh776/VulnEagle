@@ -14,7 +14,7 @@ setup(
     ],
     entry_points={
         'console_scripts': [
-            'vulneagle = vulneagle.cli:main'
+            'vulneagle = vulneagle:main'
         ]
     }
 )

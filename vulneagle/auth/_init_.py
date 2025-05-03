@@ -1,1 +1,0 @@
-from .session_handler import get_authenticated_session
