@@ -45,14 +45,14 @@ If facing permission issues, try prepending sudo (not recommended unless necessa
 Usage
 ======================================
 
-Run the VulnEagle CLI tool with the following command:
+Run the VulnEagle CLI tool with the following command:<br>
 
-   | usage: vulneagle.py --url URL [options]
+   | usage: vulneagle.py --url URL [options]<br>
 
-VulnEagle 🦅 - Phishing & Vulnerability Scanner
+VulnEagle 🦅 - Phishing & Vulnerability Scanner<br>
 
-optional arguments:
-  -h, --help                  Show this help message and exit
+optional arguments:<br>
+  -h, --help                  Show this help message and exit<br>
 
 Target:
   --url URL                  Target URL to scan (required)
