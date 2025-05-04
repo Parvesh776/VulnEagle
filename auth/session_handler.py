@@ -14,7 +14,7 @@ class SessionHandler:
                 cookies = json.load(f)
             if isinstance(cookies, dict):
                 self.session.cookies.update(cookies)
-                print(f"[+] Loaded cookies: {cookies.keys()}")
+                print(f"[+] Loaded cookies: {list(cookies.keys())}")
             else:
                 raise ValueError("Cookies file must contain a JSON object (dict)")
         except Exception as e:
@@ -30,13 +30,19 @@ class SessionHandler:
         print(f"[+] Setting custom headers: {list(headers_dict.keys())}")
         self.auth_headers.update(headers_dict)
 
-    def get(self, url, **kwargs):
+    def get(self, url, headers=None, **kwargs):
         """Authenticated GET request"""
-        return self.session.get(url, headers=self.auth_headers, **kwargs)
+        merged_headers = self.auth_headers.copy()
+        if headers:
+            merged_headers.update(headers)
+        return self.session.get(url, headers=merged_headers, **kwargs)
 
-    def post(self, url, data=None, json=None, **kwargs):
+    def post(self, url, data=None, json=None, headers=None, **kwargs):
         """Authenticated POST request"""
-        return self.session.post(url, data=data, json=json, headers=self.auth_headers, **kwargs)
+        merged_headers = self.auth_headers.copy()
+        if headers:
+            merged_headers.update(headers)
+        return self.session.post(url, data=data, json=json, headers=merged_headers, **kwargs)
 
     def simulate_login(self, login_url, creds):
         """
@@ -53,22 +59,15 @@ class SessionHandler:
         except Exception as e:
             print(f"[!] Login error: {e}")
 
-# For testing purposes
+    @property
+    def cookies(self):
+      return self.session.cookies
+
+ 
+
+# Test mode
 if __name__ == "__main__":
     sh = SessionHandler()
-
-    # Example 1: JWT Token
-    # sh.set_header_auth("eyJh...abc")
-
-    # Example 2: Cookie-based Auth
-    # sh.set_cookie_auth("cookies.json")
-
-    # Example 3: Simulate Login
-    # sh.simulate_login("https://site.com/login", {"username": "admin", "password": "pass123"})
-
-    # Example 4: Add Custom Headers
-    # sh.set_custom_headers({"X-Test": "True", "User-Agent": "VulnEagle"})
-
-    # Test request
+    sh.set_custom_headers({"User-Agent": "VulnEagle-Test"})
     resp = sh.get("https://httpbin.org/headers")
     print(resp.text)

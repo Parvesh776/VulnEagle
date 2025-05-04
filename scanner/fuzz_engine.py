@@ -54,8 +54,11 @@ def detect_waf(url, session):
             if sig.lower() in resp.headers.get("Server", "").lower() or sig.lower() in resp.text.lower():
                 print(f"[!] WAF Detected: {name}")
                 return name
+    except requests.exceptions.RequestException as e:
+        print(f"[!] WAF detection failed for {url}: {e}")
     except Exception as e:
-        print(f"[!] WAF Detection Error: {e}")
+        print(f"[!] Unexpected error during WAF detection: {e}")
+    print("[*] No WAF detected or WAF detection skipped.")
     return None
 
 def evade_payload(payload, waf_name):
@@ -73,17 +76,23 @@ def fuzz_payloads(endpoints, vuln_type, session=None):
     if not payloads:
         return results
 
+    waf_cache = {}
+
     for endpoint in endpoints:
         parsed = urlparse(endpoint)
         base = f"{parsed.scheme}://{parsed.netloc}"
         path = parsed.path
-        waf_name = detect_waf(endpoint, session)
+
+        # Cache WAF detection per host
+        if base not in waf_cache:
+            waf_cache[base] = detect_waf(endpoint, session)
+        waf_name = waf_cache[base]
 
         for payload in payloads:
             evaded_payload = evade_payload(payload, waf_name)
             test_url = urljoin(base, path + f"?input={evaded_payload}")
             try:
-                r = session.get(test_url, headers=headers) if session else requests.get(test_url, headers=headers)
+                r = session.get(test_url, headers=headers, timeout=10) if session else requests.get(test_url, headers=headers, timeout=10)
                 content = r.text.lower()
 
                 if vuln_type == "xss" and payload.lower() in content:

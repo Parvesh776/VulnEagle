@@ -7,6 +7,9 @@ web application reconnaissance and penetration testing. It is designed
 to automate the process of discovering JavaScript endpoints, fuzzing 
 those endpoints, and mapping any potential vulnerabilities in the 
 target web application.
+VulnEagle is an automated, modular, and customizable tool that provides all the essential features needed for web application security testing. It can make your security testing workflow more efficient and effective.
+
+
 
 ======================================
 Installation
@@ -29,10 +32,6 @@ Make sure Python 3.10+ is installed. Then install required packages: <br>
 4. Run VulnEagle<br>
    python vulneagle.py --url <target_url> [options] <br>
 
-5. CLI Usage <br>
-python3 vulneagle.py -url https://example.com --recon<br>
-python3 vulneagle.py -url https://example.com --fuzz --auth cookie
-python3 vulneagle.py --url https://example.com --smart-recon --report-format html
 
 
 ✅ Notes
@@ -48,20 +47,38 @@ Usage
 
 Run the VulnEagle CLI tool with the following command:
 
-python vulneagle.py --url <target_url> [options] 
-python3 vulneagle.py --url https://target.com --smart-recon --report-format html
+   | usage: vulneagle.py --url URL [options]
 
+VulnEagle 🦅 - Phishing & Vulnerability Scanner
 
+optional arguments:
+  -h, --help                  Show this help message and exit
 
- | Option                | Description                                      |
-|-----------------------|--------------------------------------------------|
-| `--url`               | Target URL to scan *(required)*                 |
-| `--auth <cookies.txt>`| Load auth cookies for login-required pages       |
-| `--token <token>`     | Provide a bearer/auth token                      |
-| `--header <header>`   | Add a custom HTTP header                         |
-| `--smart-recon`       | Enable JS, subdomain, and dynamic link recon     |
-| `--report-format`     | Output format: `html`, `json`, or `txt`          |
-| `--output <filename>` | Save the output to a custom file                 |
+Target:
+  --url URL                  Target URL to scan (required)
+
+Modules:
+  --smart-recon              Perform smart recon (JS parsing, dynamic crawling, subdomain enumeration)
+  --map-inputs               Map input fields, headers, cookies, and tokens for vulnerability analysis
+  --fuzz                     Run fuzzing engine (XSS, SQLi, LFI, SSTI) on discovered input points
+  --waf                      Enable basic WAF detection and signature evasion
+
+Authentication:
+  --auth AUTH                Provide authentication header (e.g., "Bearer <token>", "Cookie: sessionid=abc")
+  --header HEADER            Custom headers (e.g., "X-Forwarded-For: 127.0.0.1")
+  --token TOKEN              JWT, API key, or session token to include
+
+Reporting:
+  --report-format FORMAT     Report format: html (default), json, txt
+  --output FILE              Output file for the report (e.g., report.html)
+
+Examples:
+  python vulneagle.py --url https://target.com --smart-recon --output recon.html
+  python vulneagle.py --url https://target.com --map-inputs --auth "Bearer eyJ..." --output map.html
+  python vulneagle.py --url https://target.com --fuzz --waf --output fuzz.html
+  python vulneagle.py --url https://target.com --smart-recon --map-inputs --fuzz --auth "Cookie: sessionid=abc" --waf --output full.html
+
+Project: VulnEagle | Author: @parvesh776
 
 ======================================
 Contributing
