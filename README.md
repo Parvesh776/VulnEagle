@@ -1,43 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>VulnEagle - Web Vulnerability Scanner</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      line-height: 1.6;
-      margin: 20px;
-    }
-    h1, h2, h3 {
-      color: #2c3e50;
-    }
-    code {
-      background-color: #f4f4f4;
-      padding: 2px 4px;
-      border-radius: 4px;
-      font-family: monospace;
-    }
-    pre {
-      background-color: #f4f4f4;
-      padding: 10px;
-      border-radius: 4px;
-      overflow-x: auto;
-    }
-    ul {
-      list-style-type: disc;
-      margin-left: 20px;
-    }
-    a {
-      color: #3498db;
-      text-decoration: none;
-    }
-    a:hover {
-      text-decoration: underline;
-    }
-  </style>
-</head>
-<body>
+
 
   <h1>VulnEagle - Web Vulnerability Scanner</h1>
 
