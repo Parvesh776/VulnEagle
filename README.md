@@ -1,95 +1,138 @@
-======================================
-         VulnEagle - README
-======================================
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>VulnEagle - Web Vulnerability Scanner</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      margin: 20px;
+    }
+    h1, h2, h3 {
+      color: #2c3e50;
+    }
+    code {
+      background-color: #f4f4f4;
+      padding: 2px 4px;
+      border-radius: 4px;
+      font-family: monospace;
+    }
+    pre {
+      background-color: #f4f4f4;
+      padding: 10px;
+      border-radius: 4px;
+      overflow-x: auto;
+    }
+    ul {
+      list-style-type: disc;
+      margin-left: 20px;
+    }
+    a {
+      color: #3498db;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
 
-VulnEagle is a Python-based Command Line Interface (CLI) tool for 
-web application reconnaissance and penetration testing. It is designed 
-to automate the process of discovering JavaScript endpoints, fuzzing 
-those endpoints, and mapping any potential vulnerabilities in the 
-target web application.
-VulnEagle is an automated, modular, and customizable tool that provides all the essential features needed for web application security testing. It can make your security testing workflow more efficient and effective.
+  <h1>VulnEagle - Web Vulnerability Scanner</h1>
 
+  <p><strong>VulnEagle</strong> is a Python-based Command Line Interface (CLI) tool designed for web application reconnaissance and penetration testing. It automates the discovery of JavaScript endpoints, fuzzes those endpoints, and maps potential vulnerabilities in target web applications. VulnEagle is modular, customizable, and streamlines your security testing workflow.</p>
 
+  <h2> Installation</h2>
 
-======================================
-Installation
-======================================
+  <ol>
+    <li><strong>Clone the repository:</strong>
+      <pre><code>git clone https://github.com/Parvesh776/VulnEagle.git
+cd VulnEagle</code></pre>
+    </li>
+    <li><strong>Install Python dependencies:</strong>
+      <pre><code>sudo apt update
+sudo apt install python3-pip -y
+pip3 install -r requirements.txt</code></pre>
+    </li>
+    <li><strong>Install Playwright (for Smart Recon module):</strong>
+      <pre><code>pip install playwright
+playwright install</code></pre>
+    </li>
+  </ol>
 
-1. Clone the repository:<br>
-   git clone https://github.com/Parvesh776/VulnEagle.git
-   cd VulnEagle
+  <h3>Notes</h3>
+  <ul>
+    <li>No need to create a virtual environment; this setup works directly with system Python.</li>
+    <li>Ensure <code>pip</code> is updated:
+      <pre><code>python -m pip install --upgrade pip</code></pre>
+    </li>
+    <li>If facing permission issues, consider prepending <code>sudo</code> (use cautiously).</li>
+  </ul>
 
-2. Install Python Dependencies
-Make sure Python 3.10+ is installed. Then install required packages: <br>
---sudo apt update<br>
---sudo apt install python3-pip -y<br>
---pip3 install -r requirements.txt
+  <h2> Usage</h2>
 
-3. Install Playwright (for Smart Recon module)<br>
-   pip install playwright<br>
-   playwright install<br>
+  <p>Run the VulnEagle CLI tool with the following command:</p>
 
-4. Run VulnEagle<br>
-   python vulneagle.py --url <target_url> [options] <br>
+  <pre><code>python vulneagle.py --url &lt;target_url&gt; [options]</code></pre>
 
+  <h3>Optional Arguments:</h3>
+  <ul>
+    <li><code>-h</code>, <code>--help</code>: Show help message and exit.</li>
+  </ul>
 
+  <h3>Target:</h3>
+  <ul>
+    <li><code>--url URL</code>: Target URL to scan (required).</li>
+  </ul>
 
-✅ Notes
+  <h3>Modules:</h3>
+  <ul>
+    <li><code>--smart-recon</code>: Perform smart recon (JS parsing, dynamic crawling, subdomain enumeration).</li>
+    <li><code>--map-inputs</code>: Map input fields, headers, cookies, and tokens for vulnerability analysis.</li>
+    <li><code>--fuzz</code>: Run fuzzing engine (XSS, SQLi, LFI, SSTI) on discovered input points.</li>
+    <li><code>--waf</code>: Enable basic WAF detection and signature evasion.</li>
+  </ul>
 
-No need to create a virtual environment. This setup works directly with system Python.
-Make sure pip is updated: python -m pip install --upgrade pip
-If facing permission issues, try prepending sudo (not recommended unless necessary).
+  <h3>Authentication:</h3>
+  <ul>
+    <li><code>--auth AUTH</code>: Provide authentication header (e.g., "Bearer &lt;token&gt;", "Cookie: sessionid=abc").</li>
+    <li><code>--header HEADER</code>: Custom headers (e.g., "X-Forwarded-For: 127.0.0.1").</li>
+    <li><code>--token TOKEN</code>: JWT, API key, or session token to include.</li>
+  </ul>
 
+  <h3>Reporting:</h3>
+  <ul>
+    <li><code>--report-format FORMAT</code>: Report format: <code>html</code> (default), <code>json</code>, <code>txt</code>.</li>
+    <li><code>--output FILE</code>: Output file for the report (e.g., <code>report.html</code>).</li>
+  </ul>
 
-======================================
-Usage
-======================================
+  <h3>Examples:</h3>
+  <pre><code>python vulneagle.py --url https://target.com --smart-recon --output recon.html
+python vulneagle.py --url https://target.com --map-inputs --auth "Bearer eyJ..." --output map.html
+python vulneagle.py --url https://target.com --fuzz --waf --output fuzz.html
+python vulneagle.py --url https://target.com --smart-recon --map-inputs --fuzz --auth "Cookie: sessionid=abc" --waf --output full.html</code></pre>
 
-Run the VulnEagle CLI tool with the following command:<br>
+  <h2>Contributing</h2>
 
-   | usage: vulneagle.py --url URL [options]<br>
+  <p>If you'd like to contribute to VulnEagle:</p>
+  <ol>
+    <li>Fork the repository.</li>
+    <li>Create a new branch for your feature or fix.</li>
+    <li>Make your changes and commit them.</li>
+    <li>Push your branch to your forked repository.</li>
+    <li>Submit a pull request with a detailed description of your changes.</li>
+  </ol>
 
-VulnEagle 🦅 - Phishing & Vulnerability Scanner<br>
+  <p>To report bugs or request features, please use the <a href="https://github.com/Parvesh776/VulnEagle/issues">GitHub Issues</a> section.</p>
 
-optional arguments:<br>
-  -h, --help                  Show this help message and exit<br>
+  <h2>📄 License</h2>
 
-Target:
-  --url URL                  Target URL to scan (required)
+  <p>VulnEagle is open-source software licensed under the <a href="https://opensource.org/licenses/MIT">MIT License</a>.</p>
 
-Modules:
-  --smart-recon              Perform smart recon (JS parsing, dynamic crawling, subdomain enumeration)
-  --map-inputs               Map input fields, headers, cookies, and tokens for vulnerability analysis
-  --fuzz                     Run fuzzing engine (XSS, SQLi, LFI, SSTI) on discovered input points
-  --waf                      Enable basic WAF detection and signature evasion
+  <hr>
 
-Authentication:
-  --auth AUTH                Provide authentication header (e.g., "Bearer <token>", "Cookie: sessionid=abc")
-  --header HEADER            Custom headers (e.g., "X-Forwarded-For: 127.0.0.1")
-  --token TOKEN              JWT, API key, or session token to include
+  <p><strong>Project:</strong> VulnEagle | <strong>Author:</strong> <a href="https://github.com/Parvesh776">@parvesh776</a></p>
 
-Reporting:
-  --report-format FORMAT     Report format: html (default), json, txt
-  --output FILE              Output file for the report (e.g., report.html)
-
-Examples:
-  python vulneagle.py --url https://target.com --smart-recon --output recon.html
-  python vulneagle.py --url https://target.com --map-inputs --auth "Bearer eyJ..." --output map.html
-  python vulneagle.py --url https://target.com --fuzz --waf --output fuzz.html
-  python vulneagle.py --url https://target.com --smart-recon --map-inputs --fuzz --auth "Cookie: sessionid=abc" --waf --output full.html
-
-Project: VulnEagle | Author: @parvesh776
-
-======================================
-Contributing
-======================================
-
-If you want to contribute to VulnEagle, please fork the repository and create a pull request with your improvements.
-
-To report bugs or request features, please use the GitHub Issues section.
-
-======================================
-License
-======================================
-
-VulnEagle is open-source software licensed under the MIT License.
+</body>
+</html>
