@@ -56,18 +56,30 @@ sudo apt install -y python3-requests python3-yaml python3-dnspython
 pip3 install --break-system-packages requests dnspython pyyaml
 </code></pre>
 
-<h4>Make Executable</h4>
-<pre><code># Direct execution
-chmod +x vulneagle.py
-./vulneagle.py -d example.com -se
+<h4>One-Command Installation (Recommended)</h4>
+<pre><code># Clone and install system-wide
+git clone https://github.com/Parvesh776/VulnEagle.git
+cd VulnEagle
+chmod +x install.sh
+sudo ./install.sh
 
-# Optional: System-wide access
-sudo ln -s $(pwd)/vulneagle.py /usr/local/bin/vulneagle
+# After installation, you can delete the cloned directory
+cd ~ && rm -rf VulnEagle
+
+# Now use from anywhere
 vulneagle -d example.com -se
 </code></pre>
 
+<h4>Manual Setup (Development)</h4>
+<pre><code># Direct execution (no installation)
+chmod +x vulneagle.py
+./vulneagle.py -d example.com -se
+</code></pre>
+
 <h4>Uninstall</h4>
-<pre><code>chmod +x uninstall.sh
+<pre><code>sudo /usr/share/vulneagle/uninstall.sh
+# Or if you kept the repo
+chmod +x uninstall.sh
 sudo ./uninstall.sh
 </code></pre>
 </details>
