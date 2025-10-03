@@ -1,0 +1,6 @@
+{
+    "Authorization": "Bearer YOUR_JWT_TOKEN_HERE",
+    "Cookie": "sessionid=abc123;",
+    "User-Agent": "VulnEagleScanner"
+  }
+  

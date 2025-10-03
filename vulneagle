@@ -1,0 +1,16 @@
+#!/usr/bin/env python3
+# VulnEagle launcher wrapper for system-wide installation
+# This allows running 'vulneagle' from anywhere
+
+import sys
+import os
+
+# Add the installation directory to Python path
+INSTALL_DIR = os.path.dirname(os.path.realpath(__file__))
+if INSTALL_DIR not in sys.path:
+    sys.path.insert(0, INSTALL_DIR)
+
+# Import and run the main function
+if __name__ == "__main__":
+    from vulneagle import main
+    sys.exit(main())

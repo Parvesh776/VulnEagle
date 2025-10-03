@@ -1,0 +1,34 @@
+
+bevigil: []
+binaryedge: []
+builtwith: []
+bufferover: []
+c99: []
+censys: []  # Format: API_ID:SECRET
+certspotter: []
+chaos: []
+chinaz: []
+dnsdb: []
+dnsdumpster: []
+dnsrepo: []
+fofa: []
+fullhunt: []
+github: []
+hunter: []  # Hunter.io API key
+intelx: []
+leakix: []
+netlas: []
+pugrecon: []
+passivetotal: []  # Format: USERNAME:SECRET
+quake: []
+riddler: []  # Riddler.io API token
+robtex: []
+securitytrails: []
+shodan: []
+spyse: []  # Spyse API key
+threatbook: []
+urlscan: []  # URLScan.io API key (optional, public API works without key)
+virustotal: []
+whoisxmlapi: []
+zoomeye: []
+zoomeyeapi: []
