@@ -146,13 +146,8 @@ def main():
                     "All results auto-save to results/ folder. CTRL+C for graceful exit.\n"
                     "Use --long-help for detailed examples.",
         formatter_class=CompactFormatter,
-        epilog="Quick Examples:\n"
-               "  List sources:    %(prog)s -ls\n"
-               "  Enum (39 APIs):  %(prog)s -d site.com -se -all\n"
-               "  Enum + filter:   %(prog)s -d site.com -se -sc -live -mc 200,403\n"
-               "  DNS brute:       %(prog)s -d site.com -sb -w wordlists/subdomains.txt -rf wordlists/resolvers.txt\n"
-               "  Dir brute:       %(prog)s -d https://site.com -db -w wordlists/directories.txt -mc 200\n"
-               "  Batch domains:   %(prog)s -dL domains.txt -se -all -oD results/"
+    
+               
     )
 
     # Simplified group names
