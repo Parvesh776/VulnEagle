@@ -741,7 +741,8 @@ def fetch_from_wayback(domain):
     """Fetch subdomains via Wayback Machine CDX API (original URLs)."""
     try:
         url = f"https://web.archive.org/cdx/search/cdx?url=*.{domain}&output=json&fl=original&collapse=urlkey"
-        resp = requests.get(url, timeout=15)
+        # Use tuple timeout: (connect timeout, read timeout)
+        resp = requests.get(url, timeout=(3, 4))
         if resp.status_code == 200:
             data = resp.json()
             subs = set()
@@ -1346,12 +1347,12 @@ def fetch_subdomains(
         # Special timeout handling:
         #   - crt.sh: give generous 40s (its own internal requests timeouts are 30s)
         #   - Paginated heavy APIs: 30s
-        #   - Wayback: 8s (was 15s)
+        #   - Wayback: 5s (API is often slow/unresponsive)
         #   - Others: 15s
         if label == "crt.sh":
             timeout_limit = 40
         elif label == "Wayback":
-            timeout_limit = 8
+            timeout_limit = 5
         elif label in ["VirusTotal", "SecurityTrails", "Netlas", "BinaryEdge"]:
             timeout_limit = 30
         else:
