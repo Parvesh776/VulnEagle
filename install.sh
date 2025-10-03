@@ -88,6 +88,19 @@ EOF
 
 chmod +x "$BIN_PATH"
 
+# Verify installation
+if [ ! -f "$BIN_PATH" ]; then
+    echo "[!] Error: Failed to create executable at $BIN_PATH"
+    exit 1
+fi
+
+if [ ! -f "$INSTALL_DIR/vulneagle.py" ]; then
+    echo "[!] Error: Failed to copy files to $INSTALL_DIR"
+    exit 1
+fi
+
+echo "[✓] Executable created at $BIN_PATH"
+
 # Clean up installation directory (remove git files if present)
 rm -rf "$INSTALL_DIR/.git" 2>/dev/null || true
 rm -rf "$INSTALL_DIR/.gitignore" 2>/dev/null || true
@@ -110,12 +123,12 @@ echo "Config file: $INSTALL_DIR/recon/provider-config.yaml"
 echo ""
 echo "[*] Cleaning up installation files..."
 
-# Get parent directory before deleting
+# Save parent directory and return to it
 PARENT_DIR="$(dirname "$SCRIPT_DIR")"
+cd "$PARENT_DIR"
 
 # Delete the cloned VulnEagle directory
 if [ -d "$SCRIPT_DIR" ]; then
-    cd "$PARENT_DIR"
     rm -rf "$SCRIPT_DIR"
     echo "[✓] Removed installation directory: $SCRIPT_DIR"
 fi
@@ -125,4 +138,18 @@ echo "╔═══════════════════════�
 echo "║  VulnEagle is ready to use!           ║"
 echo "║  Type: vulneagle -h                   ║"
 echo "╚════════════════════════════════════════╝"
+echo ""
+echo "Current directory: $(pwd)"
+echo ""
+echo "Verifying installation..."
+if command -v vulneagle &> /dev/null; then
+    echo "[✓] vulneagle command is available"
+    echo ""
+    echo "Test it now: vulneagle -h"
+else
+    echo "[!] Warning: vulneagle command not found in PATH"
+    echo "[*] Try running: hash -r  (to refresh shell's command cache)"
+    echo "[*] Or restart your shell"
+    echo "[*] Manual test: /usr/local/bin/vulneagle -h"
+fi
 echo ""
