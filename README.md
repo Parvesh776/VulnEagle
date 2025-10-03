@@ -63,8 +63,8 @@ cd VulnEagle
 chmod +x install.sh
 sudo ./install.sh
 
-# After installation, you can delete the cloned directory
-cd ~ && rm -rf VulnEagle
+# Installation script automatically cleans up the directory
+# You'll be returned to parent directory with clean setup
 
 # Now use from anywhere
 vulneagle -d example.com -se

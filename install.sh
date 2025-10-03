@@ -108,6 +108,21 @@ echo ""
 echo "Installation directory: $INSTALL_DIR"
 echo "Config file: $INSTALL_DIR/recon/provider-config.yaml"
 echo ""
-echo "You can now delete this cloned directory:"
-echo "  cd ~ && rm -rf VulnEagle"
+echo "[*] Cleaning up installation files..."
+
+# Get parent directory before deleting
+PARENT_DIR="$(dirname "$SCRIPT_DIR")"
+
+# Delete the cloned VulnEagle directory
+if [ -d "$SCRIPT_DIR" ]; then
+    cd "$PARENT_DIR"
+    rm -rf "$SCRIPT_DIR"
+    echo "[✓] Removed installation directory: $SCRIPT_DIR"
+fi
+
+echo ""
+echo "╔════════════════════════════════════════╗"
+echo "║  VulnEagle is ready to use!           ║"
+echo "║  Type: vulneagle -h                   ║"
+echo "╚════════════════════════════════════════╝"
 echo ""
