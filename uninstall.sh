@@ -28,6 +28,12 @@ if [ -f /usr/local/bin/vulneagle ]; then
     echo "[✓] Removed /usr/local/bin/vulneagle"
 fi
 
+# Remove symlink if exists
+if [ -L /usr/bin/vulneagle ]; then
+    rm -f /usr/bin/vulneagle
+    echo "[✓] Removed /usr/bin/vulneagle symlink"
+fi
+
 echo ""
 echo "╔════════════════════════════════════════╗"
 echo "║  ✓ Uninstallation Complete!           ║"

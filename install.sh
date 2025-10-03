@@ -80,13 +80,19 @@ chmod +x "$INSTALL_DIR/uninstall.sh"
 # Create wrapper script in /usr/local/bin
 echo ""
 echo "[*] Creating system-wide executable..."
-cat > "$BIN_PATH" << 'EOF'
-#!/bin/bash
-# VulnEagle wrapper script
-exec python3 /usr/share/vulneagle/vulneagle.py "$@"
-EOF
 
-chmod +x "$BIN_PATH"
+# Remove old symlink/file if exists
+rm -f "$BIN_PATH"
+
+# Create wrapper script
+cat > "$BIN_PATH" <<'WRAPPER'
+#!/usr/bin/env bash
+# VulnEagle system-wide wrapper
+exec /usr/bin/python3 /usr/share/vulneagle/vulneagle.py "$@"
+WRAPPER
+
+# Make it executable
+chmod 755 "$BIN_PATH"
 
 # Verify installation
 if [ ! -f "$BIN_PATH" ]; then
@@ -100,6 +106,11 @@ if [ ! -f "$INSTALL_DIR/vulneagle.py" ]; then
 fi
 
 echo "[✓] Executable created at $BIN_PATH"
+
+# Also create a symlink as backup method
+if [ ! -L "/usr/bin/vulneagle" ]; then
+    ln -sf "$BIN_PATH" /usr/bin/vulneagle 2>/dev/null || true
+fi
 
 # Clean up installation directory (remove git files if present)
 rm -rf "$INSTALL_DIR/.git" 2>/dev/null || true
@@ -142,14 +153,25 @@ echo ""
 echo "Current directory: $(pwd)"
 echo ""
 echo "Verifying installation..."
-if command -v vulneagle &> /dev/null; then
-    echo "[✓] vulneagle command is available"
-    echo ""
-    echo "Test it now: vulneagle -h"
+
+# Update command cache
+hash -r 2>/dev/null || rehash 2>/dev/null || true
+
+# Check if vulneagle is accessible
+if [ -x "$BIN_PATH" ]; then
+    echo "[✓] Executable file exists and is executable"
+    
+    # Try to run it
+    if "$BIN_PATH" --version &>/dev/null || "$BIN_PATH" -h &>/dev/null; then
+        echo "[✓] vulneagle command is working"
+        echo ""
+        echo "Installation successful! Run: vulneagle -h"
+    else
+        echo "[!] Executable exists but may have issues"
+        echo "[*] Try manually: $BIN_PATH -h"
+    fi
 else
-    echo "[!] Warning: vulneagle command not found in PATH"
-    echo "[*] Try running: hash -r  (to refresh shell's command cache)"
-    echo "[*] Or restart your shell"
-    echo "[*] Manual test: /usr/local/bin/vulneagle -h"
+    echo "[!] Error: Executable not found or not executable at $BIN_PATH"
+    echo "[*] Manual check: ls -la $BIN_PATH"
 fi
 echo ""
