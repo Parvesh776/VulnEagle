@@ -472,7 +472,7 @@ def main():
     brute_results = []
     status_map = {}
 
-    def probe_status(subdomains, timeout=5, threads=30):
+    def probe_status(subdomains, timeout=3, threads=100):
         """Probe HTTP status for each subdomain using HTTPS first then HTTP fallback.
         Returns dict: subdomain -> (scheme, status or None)
         """
@@ -480,7 +480,17 @@ def main():
         subs = [s for s in subdomains if s and not s.startswith('*')]
         if not subs:
             return results
-        max_threads = min(threads, 50)
+        max_threads = min(threads, 200)
+
+        # Create a session with connection pooling for better performance
+        session = requests.Session()
+        adapter = requests.adapters.HTTPAdapter(
+            pool_connections=max_threads,
+            pool_maxsize=max_threads,
+            max_retries=0
+        )
+        session.mount('http://', adapter)
+        session.mount('https://', adapter)
 
         def check(host):
             schemes = ["https://", "http://"]
@@ -488,13 +498,14 @@ def main():
                 url = sch + host
                 try:
                     # HEAD first
-                    r = requests.head(url, timeout=timeout, allow_redirects=True)
+                    r = session.head(url, timeout=timeout, allow_redirects=True)
                     code = r.status_code
                     # Some servers mis-handle HEAD; fallback to GET if suspicious
                     if code in (405, 500):
                         try:
-                            r2 = requests.get(url, timeout=timeout, allow_redirects=True, stream=True)
+                            r2 = session.get(url, timeout=timeout, allow_redirects=True, stream=True)
                             code = r2.status_code
+                            r2.close()
                         except Exception:
                             pass
                     return host, sch.rstrip(':/'), code
@@ -505,6 +516,8 @@ def main():
         with concurrent.futures.ThreadPoolExecutor(max_workers=max_threads) as ex:
             for host, scheme, code in ex.map(check, subs):
                 results[host] = {"scheme": scheme, "status": code}
+        
+        session.close()
         return results
     dir_results = {}
 
