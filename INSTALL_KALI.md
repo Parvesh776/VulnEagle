@@ -37,10 +37,10 @@ After installation, you'll have a clean system with:
 
 ```bash
 # Subdomain enumeration
-vulneagle -d tesla.com -se
+vulneagle -d example.com -se
 
 # DNS brute force with custom wordlist
-vulneagle -d tesla.com -sb -w /usr/share/vulneagle/wordlists/subdomains.txt
+vulneagle -d example.com -sb -w /usr/share/vulneagle/wordlists/subdomains.txt
 
 # Directory brute force
 vulneagle -d https://example.com -db
