@@ -1,7 +1,7 @@
 
 
 <h1>VulnEagle</h1>
-<p><strong>VulnEagle</strong> is a lean reconnaissance utility providing passive subdomain enumeration (37 APIs), DNS brute forcing, HTTP(S) status probing, and recursive directory brute forcing. Optimized for speed and maximum coverage.</p>
+<p><strong>VulnEagle</strong> is a reconnaissance utility providing passive subdomain enumeration (37 APIs), DNS brute forcing, HTTP(S) status probing, and recursive directory brute forcing. Optimized for speed and maximum coverage.</p>
 
 <h2>🚀 Quick Install (Kali Linux)</h2>
 
