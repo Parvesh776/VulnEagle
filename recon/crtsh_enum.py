@@ -1359,9 +1359,12 @@ def fetch_subdomains(
             timeout_limit = 15
         
         try:
-            with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
-                future = executor.submit(call_api)
+            executor = concurrent.futures.ThreadPoolExecutor(max_workers=1)
+            future = executor.submit(call_api)
+            try:
                 subs = future.result(timeout=timeout_limit)
+            finally:
+                executor.shutdown(wait=False)  # Don't wait for thread to finish
         except concurrent.futures.TimeoutError:
             if label == "crt.sh":
                 # One graceful fallback attempt without outer timeout (relies on internal 30s per request)
