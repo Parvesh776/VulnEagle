@@ -482,6 +482,8 @@ def main():
             return results
         max_threads = min(threads, 200)
 
+        verbose(f"[Verbose] Probing with {max_threads} threads, {timeout}s timeout")
+
         # Create a session with connection pooling for better performance
         session = requests.Session()
         adapter = requests.adapters.HTTPAdapter(
@@ -492,6 +494,8 @@ def main():
         session.mount('http://', adapter)
         session.mount('https://', adapter)
 
+        verbose(f"[Verbose] Connection pooling initialized (pool size: {max_threads})")
+
         def check(host):
             schemes = ["https://", "http://"]
             for sch in schemes:
@@ -500,16 +504,22 @@ def main():
                     # HEAD first
                     r = session.head(url, timeout=timeout, allow_redirects=True)
                     code = r.status_code
+                    if args.verbose:
+                        verbose(f"[Verbose] {url} → {code}")
                     # Some servers mis-handle HEAD; fallback to GET if suspicious
                     if code in (405, 500):
                         try:
                             r2 = session.get(url, timeout=timeout, allow_redirects=True, stream=True)
                             code = r2.status_code
                             r2.close()
+                            if args.verbose:
+                                verbose(f"[Verbose] {url} → {code} (GET fallback)")
                         except Exception:
                             pass
                     return host, sch.rstrip(':/'), code
-                except Exception:
+                except Exception as e:
+                    if args.verbose:
+                        verbose(f"[Verbose] {url} → Failed ({type(e).__name__})")
                     continue
             return host, None, None
 
@@ -518,6 +528,7 @@ def main():
                 results[host] = {"scheme": scheme, "status": code}
         
         session.close()
+        verbose(f"[Verbose] Probing completed: {len([r for r in results.values() if r['status']])} live hosts")
         return results
     dir_results = {}
 
@@ -589,6 +600,8 @@ def main():
     # Subdomain Enumeration Mode
     if args.subdomain_enum:
         log("[*] Subdomain Enumeration (CTRL+C to stop)")
+        verbose(f"[Verbose] Enumeration mode: {'All sources' if args.all_sources else 'Lite' if args.lite_sources else 'Default'}")
+        verbose(f"[Verbose] Timeout: {getattr(args, 'timeout', 60)}s, Max time: {getattr(args, 'max_time', 600)}s")
         try:
             # Multi-domain batch mode
             if domain_list:
@@ -598,10 +611,16 @@ def main():
                     out_dir = _ensure_results_dir()
                 elif not os.path.isdir(out_dir):
                     os.makedirs(out_dir, exist_ok=True)
+                verbose(f"[Verbose] Batch mode: {len(domain_list)} domains, output dir: {out_dir}")
                 for dom in domain_list:
                     log(f"\n[=] Enumerating {dom}")
+                    verbose(f"[Verbose] Processing domain: {dom}")
                     _inc = _set_from_args(getattr(args, 'include_sources', None))
                     _exc = _set_from_args(getattr(args, 'exclude_sources', None))
+                    if _inc:
+                        verbose(f"[Verbose] Include sources: {', '.join(_inc)}")
+                    if _exc:
+                        verbose(f"[Verbose] Exclude sources: {', '.join(_exc)}")
                     effective_all = True if not args.lite_sources and not _inc and not _exc and not getattr(args, 'all_sources', False) else getattr(args, 'all_sources', False)
                     res = fetch_subdomains(
                         dom,
@@ -628,11 +647,14 @@ def main():
                         sub_list = res
                         stats = []
                         source_map = {}
+                    verbose(f"[Verbose] Found {len(sub_list)} raw subdomains before filtering")
                     sub_list = _apply_exclude_filter(_apply_match_filter(sub_list))
+                    verbose(f"[Verbose] After filtering: {len(sub_list)} subdomains")
                     status_map_local = {}
                     live_list_local = None
                     if (args.status_code or args.live or args.match_code) and sub_list:
                         log("[*] Probing HTTP status codes")
+                        verbose(f"[Verbose] Starting status probe for {len(sub_list)} subdomains")
                         status_map_local = probe_status(sub_list, threads=min(args.threads, 60))
                         
                         # Apply match code filtering if specified
@@ -765,6 +787,7 @@ def main():
     # Subdomain Brute-Force Mode
     if args.subdomain_bruteforce:
         log("[*] Subdomain Brute-Force Mode (CTRL+C to stop)")
+        verbose(f"[Verbose] DNS timeout: {args.dns_timeout}s, Threads: {args.threads}")
         try:
             wordlist = args.wordlist or "wordlists/subdomains.txt"
             if not args.wordlist:
@@ -773,18 +796,23 @@ def main():
             ok_w, err = ensure_file(wordlist, "subdomain wordlist")
             if not ok_w:
                 log(f"[!] {err}", "error"); return
+            verbose(f"[Verbose] Wordlist: {wordlist}")
             if not args.resolver_file:
                 log("[!] Provide resolvers with --resolver-file", "error")
                 return
             file_resolvers = read_resolvers_file(args.resolver_file)
+            verbose(f"[Verbose] Loaded {len(file_resolvers)} resolvers from file")
             validated = validate_resolvers(file_resolvers)
             if not validated:
                 log("[!] Resolver file empty or invalid entries only.", "error")
                 return
+            verbose(f"[Verbose] Validated {len(validated)} working resolvers")
 
+            verbose(f"[Verbose] Starting DNS brute force on {primary_domain}")
             brute_results = bruteforce_subdomains(primary_domain, wordlist, threads=args.threads, resolvers=validated, timeout=args.dns_timeout)
 
             log(f"\n[OK] Found {len(brute_results)} subdomains (brute-force)\n", "ok")
+            verbose(f"[Verbose] Brute force complete: {len(brute_results)} valid subdomains found")
             for idx, sub in enumerate(brute_results, 1):
                 log(f"{idx}. {sub}", "result")
 
@@ -792,6 +820,7 @@ def main():
             status_map = {}
             if (args.status_code or args.live or args.match_code) and brute_results:
                 log("[*] Probing HTTP status codes for brute-forced subdomains")
+                verbose(f"[Verbose] Probing {len(brute_results)} brute-forced subdomains")
                 status_map = probe_status(brute_results, threads=min(args.threads, 60))
                 
                 # Apply match code filtering if specified
@@ -799,6 +828,7 @@ def main():
                 if args.match_code:
                     match_codes = {c.strip() for c in args.match_code.split(',') if c.strip()}
                     log(f"[*] Filtering by status codes: {', '.join(sorted(match_codes))}", "info")
+                    verbose(f"[Verbose] Match codes filter: {', '.join(sorted(match_codes))}")
                 
                 filtered_results = []
                 if args.live or args.match_code:
@@ -825,6 +855,7 @@ def main():
                     
                     if match_codes:
                         log(f"[*] Matched hosts (filtered by status): {len(filtered_results)}", "info")
+                        verbose(f"[Verbose] Status filtering: {len(filtered_results)}/{len(brute_results)} matched")
                     else:
                         log(f"[*] Live hosts: {len(live_brute)}", "info")
                     
@@ -854,6 +885,8 @@ def main():
     # Directory brute-force
     if args.dir_bruteforce:
         log("[*] Directory Bruteforce Mode (CTRL+C to stop)")
+        verbose(f"[Verbose] Directory timeout: {args.dir_timeout}s, Threads: {args.threads}")
+        verbose(f"[Verbose] Recursion: {'Enabled (depth=' + str(args.rec_depth) + ')' if args.recursion else 'Disabled'}")
         try:
             # Directory brute now uses -w directly
             wordlist = args.wordlist or "wordlists/directories.txt"
@@ -861,27 +894,39 @@ def main():
             if not ok_d:
                 log(f"[!] {err}", "error")
                 return
+            verbose(f"[Verbose] Wordlist: {wordlist}")
             exts = [e.strip() for e in args.dir_extensions.split(',')] if args.dir_extensions else []
+            if exts:
+                verbose(f"[Verbose] Extensions: {', '.join(exts)}")
             status_codes = [s.strip() for s in args.dir_status.split(',')] if args.dir_status else None
+            if status_codes:
+                verbose(f"[Verbose] Success codes: {', '.join(status_codes)}")
             base = args.targets[0] if args.targets else None
+            verbose(f"[Verbose] Target URL: {base}")
             
             # Parse match_codes for filtering display
             match_codes = None
             if args.match_code:
                 match_codes = [c.strip() for c in args.match_code.split(',') if c.strip()]
                 log(f"[*] Filtering display by status codes: {', '.join(sorted(match_codes))}", "info")
+                verbose(f"[Verbose] Match codes filter: {', '.join(sorted(match_codes))}")
             
             if args.recursion:
                 depth = max(1, min(5, args.rec_depth))
+                verbose(f"[Verbose] Starting recursive scan (depth: {depth})")
                 results = recursive_dir_bruteforce(base, wordlist_path=wordlist, extensions=exts, threads=args.threads, timeout=args.dir_timeout, status_codes=status_codes, session=session, head_first=not args.no_head, rate_limit=args.rate_limit, max_depth=depth, match_codes=match_codes)
             else:
+                verbose(f"[Verbose] Starting non-recursive scan")
                 results = dir_bruteforce(base, wordlist_path=wordlist, extensions=exts, threads=args.threads, timeout=args.dir_timeout, status_codes=status_codes, session=session, head_first=not args.no_head, rate_limit=args.rate_limit, match_codes=match_codes)
+            
+            verbose(f"[Verbose] Scan complete: {len(results)} paths found")
             
             # Apply match code filtering to final results for file output
             if args.match_code and results:
                 match_codes_set = {c.strip() for c in args.match_code.split(',') if c.strip()}
                 filtered_results = [r for r in results if str(r['status']) in match_codes_set]
                 log(f"[*] Saving {len(filtered_results)} / {len(results)} results matching codes: {', '.join(sorted(match_codes_set))}", "info")
+                verbose(f"[Verbose] Filtered results: {len(filtered_results)}/{len(results)}")
                 results = filtered_results
             
             log(f"\n[OK] Directory brute-force complete. Found {len(results)} paths.", "ok")
@@ -893,6 +938,7 @@ def main():
             output_filename = os.path.basename(output_file)
             out = os.path.join(results_dir, output_filename) + (".json" if args.report_format == 'json' else '.txt')
             
+            verbose(f"[Verbose] Saving results to: {out}")
             if args.report_format == 'json':
                 with open(out, 'w') as f:
                     json.dump(results, f, indent=2)
