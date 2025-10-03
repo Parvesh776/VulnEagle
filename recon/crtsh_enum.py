@@ -1346,9 +1346,12 @@ def fetch_subdomains(
         # Special timeout handling:
         #   - crt.sh: give generous 40s (its own internal requests timeouts are 30s)
         #   - Paginated heavy APIs: 30s
+        #   - Wayback: 8s (was 15s)
         #   - Others: 15s
         if label == "crt.sh":
             timeout_limit = 40
+        elif label == "Wayback":
+            timeout_limit = 8
         elif label in ["VirusTotal", "SecurityTrails", "Netlas", "BinaryEdge"]:
             timeout_limit = 30
         else:
@@ -1369,6 +1372,9 @@ def fetch_subdomains(
                 except Exception:
                     print("    [!] crt.sh final attempt failed", flush=True)
                     return label, set()
+            elif label == "Wayback":
+                print(f"    [!] Wayback provider timed out after {timeout_limit}s and was skipped.", flush=True)
+                return label, set()
             else:
                 print(f"    [!] {label} exceeded {timeout_limit}s limit - skipping", flush=True)
                 return label, set()
@@ -1419,7 +1425,11 @@ def fetch_subdomains(
                                 if meta:
                                     labels.append(meta[3])
                             more = '' if len(labels) == len(pending) else '…'
-                            print(f"    [..] Waiting... {len(pending)} provider(s): {', '.join(labels)}{more} | elapsed {elapsed:.1f}s", flush=True)
+                            # Special message if only Wayback is left
+                            if len(pending) == 1 and labels and labels[0] == "Wayback":
+                                print(f"    [..] Waiting for Wayback provider (can be slow or rate-limited)... | elapsed {elapsed:.1f}s", flush=True)
+                            else:
+                                print(f"    [..] Waiting... {len(pending)} provider(s): {', '.join(labels)}{more} | elapsed {elapsed:.1f}s", flush=True)
                             continue
                         # Process completed futures
                         for fut in done:
