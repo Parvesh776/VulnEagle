@@ -5,30 +5,36 @@
 
 <h2>🚀 Quick Install (Kali Linux)</h2>
 
-<p><strong>Recommended:</strong> One-command automated installation</p>
+<p><strong>Recommended:</strong> Fully automated installation</p>
 
-<pre><code># Clone repository
+<pre><code># Clone and install (one-time setup)
 git clone https://github.com/Parvesh776/VulnEagle.git
 cd VulnEagle
-
-# Run automated installer 
 chmod +x install.sh
 sudo ./install.sh
+
+# Installation automatically:
+# ✓ Installs to /usr/share/vulneagle/
+# ✓ Creates global command: vulneagle
+# ✓ Cleans up cloned directory
+# ✓ Returns you to parent directory
 
 # Use from anywhere!
 vulneagle -d example.com -se
 vulneagle -l hosts.txt -sc -live
 </code></pre>
 
-<p>✅ <strong>What the installer does:</strong></p>
+<p>✅ <strong>What happens:</strong></p>
 <ul>
   <li>Checks Python 3.10+ requirement</li>
-  <li>Installs dependencies via apt (system packages) or pip</li>
-  <li>Creates global command: <code>/usr/local/bin/vulneagle</code></li>
-  <li>No virtual environment needed!</li>
+  <li>Installs dependencies (apt + pip fallback)</li>
+  <li>Copies files to <code>/usr/share/vulneagle/</code></li>
+  <li>Creates executable: <code>/usr/local/bin/vulneagle</code></li>
+  <li>Automatically removes cloned directory</li>
+  <li>Clean installation - no clutter!</li>
 </ul>
 
-<p>📖 <strong>Detailed guide:</strong> <a href="INSTALL_KALI.md">INSTALL_KALI.md</a></p>
+<p>📖 <strong>Full guide:</strong> <a href="INSTALL_KALI.md">INSTALL_KALI.md</a> | <strong>API Setup:</strong> <a href="API_SETUP_GUIDE.md">API_SETUP_GUIDE.md</a></p>
 
 <h2>Installation (Other Systems)</h2>
 <ol>
@@ -39,7 +45,7 @@ cd VulnEagle</code></pre></li>
 
 <h3>Manual Kali Linux Setup</h3>
 <details>
-<summary><strong>Show manual steps</strong></summary>
+<summary><strong>Show manual/development steps</strong></summary>
 
 <h4>Check System Readiness</h4>
 <pre><code># Run system check
@@ -56,29 +62,20 @@ sudo apt install -y python3-requests python3-yaml python3-dnspython
 pip3 install --break-system-packages requests dnspython pyyaml
 </code></pre>
 
-<h4>One-Command Installation (Recommended)</h4>
-<pre><code># Clone and install system-wide
-git clone https://github.com/Parvesh776/VulnEagle.git
-cd VulnEagle
-chmod +x install.sh
-sudo ./install.sh
-
-# Installation script automatically cleans up the directory
-# You'll be returned to parent directory with clean setup
-
-# Now use from anywhere
-vulneagle -d example.com -se
-</code></pre>
-
-<h4>Manual Setup (Development)</h4>
-<pre><code># Direct execution (no installation)
+<h4>Development Setup (No Installation)</h4>
+<pre><code># Direct execution from cloned directory
 chmod +x vulneagle.py
 ./vulneagle.py -d example.com -se
+
+# Or use python directly
+python3 vulneagle.py -d example.com -se
 </code></pre>
 
-<h4>Uninstall</h4>
-<pre><code>sudo /usr/share/vulneagle/uninstall.sh
-# Or if you kept the repo
+<h4>Uninstall VulnEagle</h4>
+<pre><code># If installed via install.sh
+sudo /usr/share/vulneagle/uninstall.sh
+
+# Or use the uninstall script from repo
 chmod +x uninstall.sh
 sudo ./uninstall.sh
 </code></pre>
@@ -259,32 +256,36 @@ python vulneagle.py -dL domains.txt -se -r jsonl -cs -oD out_dir
 
 <h3>API Keys Setup</h3>
 
-<p>VulnEagle supports <strong>37 subdomain enumeration APIs</strong>. To unlock paid sources, add your API keys:</p>
+<p>VulnEagle supports <strong>37+ subdomain enumeration APIs</strong>. Most work without keys, but adding API keys unlocks premium sources for better coverage.</p>
 
-<h4>Method 1: Configuration File (Recommended)</h4>
-<pre><code># Edit the config file
+<p>📖 <strong>Complete API Setup Guide:</strong> <a href="API_SETUP_GUIDE.md">API_SETUP_GUIDE.md</a></p>
+
+<h4>Quick Setup</h4>
+
+<p><strong>Method 1: Configuration File (Recommended)</strong></p>
+<pre><code># After installation
+sudo nano /usr/share/vulneagle/recon/provider-config.yaml
+
+# Before installation (development)
 nano recon/provider-config.yaml
 
 # Add your keys:
 virustotal: "your-virustotal-api-key"
 shodan: "your-shodan-api-key"
 securitytrails: "your-securitytrails-api-key"
+urlscan: "your-urlscan-api-key"
 chaos: "your-chaos-api-key"
-github: "your-github-token"
-netlas: "your-netlas-key"
-bevigil: "your-bevigil-key"
-# ... etc (see provider-config.yaml for all 37 APIs)
+# ... (see provider-config.yaml for all available APIs)
 </code></pre>
 
-<h4>Method 2: Environment Variables</h4>
-<pre><code># Set environment variables (prefix: VE_)
+<p><strong>Method 2: Environment Variables</strong></p>
+<pre><code># Temporary (current session)
 export VE_VIRUSTOTAL_KEY="your-key"
 export VE_SHODAN_KEY="your-key"
-export VE_SECURITYTRAILS_KEY="your-key"
 
-# Alternative formats also supported:
-export VE_VIRUSTOTAL="your-key"
-export VIRUSTOTAL_KEY="your-key"
+# Permanent (add to ~/.bashrc or ~/.zshrc)
+echo 'export VE_VIRUSTOTAL_KEY="your-key"' >> ~/.bashrc
+source ~/.bashrc
 </code></pre>
 
 <h4>View Available Sources</h4>
