@@ -1,7 +1,7 @@
 
 
 <h1>VulnEagle</h1>
-<p><strong>VulnEagle</strong> is a reconnaissance utility providing passive subdomain enumeration (37 APIs), DNS brute forcing, HTTP(S) status probing, and recursive directory brute forcing. Optimized for speed and maximum coverage.</p>
+<p><strong>VulnEagle</strong> is a lean and powerful command-line utility designed for security professionals, penetration testers, and bug bounty hunters. Its primary purpose is to automate and accelerate the critical initial phase of any security assessment: reconnaissance. By integrating multiple recon techniques into a single, efficient workflow, VulnEagle provides a comprehensive view of a target's attack surface with a focus on speed and accuracy..</p>
 
 <h2>🚀 Quick Install (Kali Linux)</h2>
 
