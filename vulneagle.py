@@ -999,13 +999,27 @@ def main():
             probe_res = probe_status(probe_hosts, threads=args.threads)
         live_filtered = []
         for host, meta in probe_res.items():
-            status = meta.get('status') if isinstance(meta, dict) else meta.get('status')
-            scheme = meta.get('scheme') if isinstance(meta, dict) else meta.get('scheme')
-            url = meta.get('url') if isinstance(meta, dict) else f"{scheme}://{host}" if scheme else host
+            if isinstance(meta, dict):
+                status = meta.get('status')
+                scheme = meta.get('scheme')
+            else:
+                status = None
+                scheme = None
+            
+            # Build URL
+            if scheme and status:
+                url = f"{scheme}://{host}"
+            else:
+                url = host
+            
+            # Skip if no status (host is down)
             if status is None:
                 continue
+            
+            # Filter by status codes if -mc specified
             if match_codes and str(status) not in match_codes:
                 continue
+            
             live_filtered.append({"host": host, "status": status, "url": url})
         for idx, item in enumerate(sorted(live_filtered, key=lambda x: x['host']), 1):
             log(f"{idx}. {item['status']} {item['url']}", "result")
