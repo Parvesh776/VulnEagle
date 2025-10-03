@@ -23,17 +23,19 @@ __version__ = "0.4.0"
 
 # Global flag for graceful shutdown
 _shutdown_requested = False
+_force_quit = False
 
 def _handle_shutdown(signum, frame):
     """Handle CTRL+C gracefully"""
-    global _shutdown_requested
+    global _shutdown_requested, _force_quit
     if not _shutdown_requested:
         _shutdown_requested = True
         print("\n[!] Shutdown requested - finishing current operations...")
         print("[!] Press CTRL+C again to force quit")
     else:
+        _force_quit = True
         print("\n[!] Force quit")
-        sys.exit(130)
+        os._exit(130)
 
 # Register signal handler
 signal.signal(signal.SIGINT, _handle_shutdown)
@@ -1043,10 +1045,18 @@ if __name__ == "__main__":
         rc = main()
         if rc is None:
             rc = 0
+        
+        # Check if graceful shutdown was requested
+        if _shutdown_requested and not _force_quit:
+            print("\n[✓] Process stopped gracefully")
+            sys.exit(130)
+        
         sys.exit(rc)
     except KeyboardInterrupt:
-        print("\n[!] Aborted by user (CTRL+C)")
+        # Clean exit on Ctrl+C
+        if not _shutdown_requested:
+            print("\n[✓] Process stopped")
         sys.exit(130)
     except Exception as e:
-        print(f"[!] Unhandled fatal error: {e.__class__.__name__}: {e}")
+        print(f"\n[!] Unhandled fatal error: {e.__class__.__name__}: {e}")
         sys.exit(1)
